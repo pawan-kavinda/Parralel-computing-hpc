@@ -21,7 +21,13 @@ int main() {
     double a = 0.0, b = 1.0;
     int n = 1000000;
 
+    double start = omp_get_wtime();  
+
     double result = openMp(a, b, n);
+
+    double end = omp_get_wtime();  
+    
     printf("OpenMP Result = %f\n", result);
+    printf("Execution Time = %f seconds\n", end - start);
     return 0;
 }
