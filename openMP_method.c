@@ -5,7 +5,7 @@ double f(double x) {
     return x * x;  
 }
 
-double openMp(double a, double b, int n) {
+double trapezoidal_openMP(double a, double b, int n) {
     double h = (b - a) / n;
     double sum = (f(a) + f(b)) / 2.0;
 
@@ -23,7 +23,7 @@ int main() {
 
     double start = omp_get_wtime();  
 
-    double result = openMp(a, b, n);
+    double result = trapezoidal_openMP(a, b, n);
 
     double end = omp_get_wtime();  
     
