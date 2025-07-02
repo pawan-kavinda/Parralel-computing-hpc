@@ -4,7 +4,7 @@
 double f(double x) {
     return x * x;  
 }
-// This function integrates f(x) from a to b using the trapezoidal rule
+
 double trapezoidal_openMP(double a, double b, int n) {
     double h = (b - a) / n;
     double sum = (f(a) + f(b)) / 2.0;
