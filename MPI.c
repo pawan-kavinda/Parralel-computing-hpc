@@ -4,7 +4,7 @@
 double f(double x) {
     return x * x;
 }
-//comment
+
 double local_trapezoidal(double local_a, double local_b, int local_n, double h) {
     double sum = (f(local_a) + f(local_b)) / 2.0;
     for (int i = 1; i < local_n; i++) {
