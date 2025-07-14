@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
         printf("Hybrid MPI+OpenMP Result = %f\n", total_result);
         printf("Execution Time = %f seconds\n", end - start);
     }
-
+//commmented
     MPI_Finalize();
     return 0;
 }
