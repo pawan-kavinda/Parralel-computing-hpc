@@ -14,31 +14,46 @@ double local_trapezoidal(double local_a, double local_b, int local_n, double h) 
 }
 
 int main(int argc, char* argv[]) {
-    int rank, size, n = 1000000;
-    double a = 0.0, b = 1.0;
-    double h, local_a, local_b;
-    int local_n;
-    double local_result, total_result;
-
+    int rank, size;
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    h = (b - a) / n;
-    local_n = n / size;
-    local_a = a + rank * local_n * h;
-    local_b = local_a + local_n * h;
+    
+    double test_cases[][3] = {
+        {0.0, 1.0, 1000000},
+        {0.0, 5.0, 2000000},
+        {1.0, 3.0, 500000},
+        {0.0, 10.0, 10000000},
+        {2.0, 4.0, 100000},
+        {0.0, 1000.0, 1000000000}
+    };
+    int num_tests = sizeof(test_cases) / sizeof(test_cases[0]);
 
-    double start = MPI_Wtime();  
-    local_result = local_trapezoidal(local_a, local_b, local_n, h);
+    for (int t = 0; t < num_tests; t++) {
+        double a = test_cases[t][0];
+        double b = test_cases[t][1];
+        int n = (int)test_cases[t][2];
 
-    MPI_Reduce(&local_result, &total_result, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+        double h = (b - a) / n;
+        int local_n = n / size;
+        double local_a = a + rank * local_n * h;
+        double local_b = local_a + local_n * h;
 
-    double end = MPI_Wtime();   
+        double start = MPI_Wtime();
+        double local_result = local_trapezoidal(local_a, local_b, local_n, h);
 
-    if (rank == 0) {
-        printf("MPI Result = %f\n", total_result);
-        printf("Execution Time = %f seconds\n", end - start);
+        double total_result;
+        MPI_Reduce(&local_result, &total_result, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+        double end = MPI_Wtime();
+
+        if (rank == 0) {
+            printf("Test %d: a=%.2f, b=%.2f, n=%d\n", t + 1, a, b, n);
+            printf("MPI Result = %.10f\n", total_result);
+            printf("Execution Time = %f seconds\n\n", end - start);
+        }
+
+        MPI_Barrier(MPI_COMM_WORLD);  
     }
 
     MPI_Finalize();
